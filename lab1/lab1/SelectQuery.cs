@@ -8,32 +8,32 @@ namespace lab1
 {
     internal class SelectQuery
     {
-        private string tableName;
-        private List<string> fields = new List<string>();
-        private string condition;
-        private string orderByField;
+        public string TableName;
+        public List<string> Fields = new List<string>();
+        public string Condition;
+        public string OrderByField;
 
         public SelectQuery SetTableName(string tableName)
         {
-            tableName = tableName;
+            TableName = tableName;
             return this;
         }
 
         public SelectQuery AddField(string field)
         {
-            fields.Add(field);
+            Fields.Add(field);
             return this;
         }
 
         public SelectQuery SetCondition(string condition)
         {
-            condition = condition;
+            Condition = condition;
             return this;
         }
 
         public SelectQuery SetOrderBy(string field)
         {
-            orderByField = field;
+            OrderByField = field;
             return this;
         }
 
@@ -41,25 +41,25 @@ namespace lab1
         {
             StringBuilder sql = new StringBuilder($"SELECT ");
 
-            if (fields.Count == 0)
+            if (Fields.Count == 0)
             {
                 sql.Append("*");
             }
             else
             {
-                sql.Append(string.Join(", ", fields));
+                sql.Append(string.Join(", ", Fields));
             }
 
-            sql.Append($" FROM {tableName}");
+            sql.Append($" FROM {TableName}");
 
-            if (!string.IsNullOrEmpty(condition))
+            if (!string.IsNullOrEmpty(Condition))
             {
-                sql.Append($" WHERE {condition}");
+                sql.Append($" WHERE {Condition}");
             }
 
-            if (!string.IsNullOrEmpty(orderByField))
+            if (!string.IsNullOrEmpty(OrderByField))
             {
-                sql.Append($" ORDER BY {orderByField}");
+                sql.Append($" ORDER BY {OrderByField}");
             }
 
             return sql.ToString();
