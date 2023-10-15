@@ -2,33 +2,71 @@
 
 namespace TaxiIntegrator
 {
+    // Target interface
     interface ITaxiService
     {
         void OrderTaxi(string startAddress, string endAddress, string? orderTime = null);
     }
 
-    class Uklon : ITaxiService
+    // Adaptee classes
+    class UklonService
     {
-        public void OrderTaxi(string startAddress, string endAddress, string orderTime)
+        public void Order(string endAddress, string startAddress)
         {
             Console.WriteLine($"Uklon taxi ordered from \"{startAddress}\" to \"{endAddress}\"");
         }
     }
 
-    class Bolt : ITaxiService
+    class BoltService
     {
-        public void OrderTaxi(string startAddress, string endAddress, string orderTime)
+        public void SetStartPoint(string address)
         {
-            Console.WriteLine($"Bolt taxi start point set: \"{startAddress}\"");
-            Console.WriteLine($"Bolt taxi end point set: \"{endAddress}\"");
+            Console.WriteLine($"Bolt taxi start point set: \"{address}\"");
+        }
+
+        public void SetEndPoint(string address)
+        {
+            Console.WriteLine($"Bolt taxi end point set: \"{address}\"");
         }
     }
 
-    class Uber : ITaxiService
+    class UberService
     {
-        public void OrderTaxi(string startAddress, string endAddress, string orderTime)
+        public void Order(string startAddress, string endAddress, string orderTime)
         {
             Console.WriteLine($"Uber taxi ordered from \"{startAddress}\" to \"{endAddress}\" at {orderTime}");
+        }
+    }
+
+    // Adapters
+    class UklonAdapter : ITaxiService
+    {
+        private readonly UklonService _uklon = new UklonService();
+
+        public void OrderTaxi(string startAddress, string endAddress, string? orderTime = null)
+        {
+            _uklon.Order(endAddress, startAddress);
+        }
+    }
+
+    class BoltAdapter : ITaxiService
+    {
+        private readonly BoltService _bolt = new BoltService();
+
+        public void OrderTaxi(string startAddress, string endAddress, string? orderTime = null)
+        {
+            _bolt.SetStartPoint(startAddress);
+            _bolt.SetEndPoint(endAddress);
+        }
+    }
+
+    class UberAdapter : ITaxiService
+    {
+        private readonly UberService _uber = new UberService();
+
+        public void OrderTaxi(string startAddress, string endAddress, string? orderTime = null)
+        {
+            _uber.Order(startAddress, endAddress, orderTime);
         }
     }
 
@@ -41,7 +79,7 @@ namespace TaxiIntegrator
 
             if (taxi == "uklon")
             {
-                ITaxiService uklon = new Uklon();
+                ITaxiService uklon = new UklonAdapter();
 
                 Console.Write("start address: ");
                 string startAddress = Console.ReadLine();
@@ -53,7 +91,7 @@ namespace TaxiIntegrator
 
             else if(taxi == "bolt")
             {
-                ITaxiService bolt = new Bolt();
+                ITaxiService bolt = new BoltAdapter();
 
                 Console.Write("start address: ");
                 string startAddress = Console.ReadLine();
@@ -65,7 +103,7 @@ namespace TaxiIntegrator
 
             else
             {
-                ITaxiService uber = new Uber();
+                ITaxiService uber = new UberAdapter();
 
                 Console.Write("start address: ");
                 string startAddress = Console.ReadLine();
