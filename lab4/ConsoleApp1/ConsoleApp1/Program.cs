@@ -12,7 +12,7 @@ interface IUniversityComponent
 class University : IUniversityComponent
 {
     public string Name { get; }
-    private List<IUniversityComponent> components = new List<IUniversityComponent>();
+    public List<IUniversityComponent> components = new List<IUniversityComponent>();
 
     public University(string name)
     {
@@ -51,7 +51,7 @@ class University : IUniversityComponent
 class Faculty : IUniversityComponent
 {
     public string Name { get; }
-    private List<IUniversityComponent> components = new List<IUniversityComponent>();
+    public List<IUniversityComponent> components = new List<IUniversityComponent>();
 
     public Faculty(string name)
     {
@@ -90,7 +90,7 @@ class Faculty : IUniversityComponent
 class Department : IUniversityComponent
 {
     public string Name { get; }
-    private List<IUniversityComponent> components = new List<IUniversityComponent>();
+    public List<IUniversityComponent> components = new List<IUniversityComponent>();
 
     public Department(string name)
     {
@@ -161,7 +161,7 @@ class Program
 {
     static void Main()
     {
-        // Створення структури університету за допомогою компоновщика
+        // Створення структури університету
         IUniversityComponent university = new University("My University");
 
         IUniversityComponent faculty1 = new Faculty("Faculty of Science");
@@ -200,11 +200,18 @@ class Program
         decimal department3Salary = department3.CalculateSalary();
         Console.WriteLine($"Department3 Salary: {department3Salary}");
 
-        // б) Збільшення заробітної плати працівникам зі стажем більше Х років
+        // б) Збільшення заробітної плати працівникам зі стажем більше Х роківx
         university.IncreaseSalary(10);
 
         // Виведення результатів
-        totalSalary = university.CalculateSalary();
-        Console.WriteLine($"Salary++ \nTotal University Salary after Increase: {totalSalary}");
+        DisplaySalaries(university);
+    }
+    static void DisplaySalaries(IUniversityComponent component)
+    {
+        Console.WriteLine($"Component {component.GetName()} - Update salary: {component.CalculateSalary()}");
+        foreach (var subComponent in (component as dynamic).components)
+        {
+            DisplaySalaries(subComponent);
+        }
     }
 }
